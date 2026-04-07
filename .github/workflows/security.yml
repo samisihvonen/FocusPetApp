@@ -1,0 +1,37 @@
+name: Security Check
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install safely
+        run: npm ci --ignore-scripts
+
+      - name: Audit dependencies
+        run: npm audit --audit-level=high
+
+      - name: Block bad axios versions
+        run: |
+          if grep -E "1\.14\.1|0\.30\.4" package-lock.json; then
+            echo "❌ Malicious axios detected!"
+            exit 1
+          fi
+
+      - name: Check malicious package
+        run: |
+          if [ -d "node_modules/plain-crypto-js" ]; then
+            echo "❌ Malicious package detected!"
+            exit 1
+          fi

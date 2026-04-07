@@ -1,0 +1,76 @@
+diff --git a/node_modules/@react-native-voice/voice/android/build.gradle b/node_modules/@react-native-voice/voice/android/build.gradle
+index 7efd4a5..68ab2ab 100644
+--- a/node_modules/@react-native-voice/voice/android/build.gradle
++++ b/node_modules/@react-native-voice/voice/android/build.gradle
+@@ -1,11 +1,15 @@
++def safeExtGet(prop, fallback) {
++    rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
++}
++
+ apply plugin: 'com.android.library'
+ 
+ android {
+-    compileSdk 34
+-    buildToolsVersion "34.0.0"
++    namespace "com.wenkesj.voice"
++    compileSdkVersion safeExtGet('compileSdkVersion', 35)
+ 
+     defaultConfig {
+-        minSdk 21
+-        targetSdk 34
++        minSdkVersion safeExtGet('minSdkVersion', 21)
++        targetSdkVersion safeExtGet('targetSdkVersion', 35)
+     }
+ }
+ 
+diff --git a/node_modules/@react-native-voice/voice/android/src/main/AndroidManifest.xml b/node_modules/@react-native-voice/voice/android/src/main/AndroidManifest.xml
+index 6c65139..7d5fb08 100644
+--- a/node_modules/@react-native-voice/voice/android/src/main/AndroidManifest.xml
++++ b/node_modules/@react-native-voice/voice/android/src/main/AndroidManifest.xml
+@@ -1,5 +1,4 @@
+ <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+-    package="com.wenkesj.voice"
+     xmlns:tools="http://schemas.android.com/tools">
+ 
+     <uses-sdk tools:overrideLibrary="com.facebook.react" />
+diff --git a/node_modules/@react-native-voice/voice/dist/index.js b/node_modules/@react-native-voice/voice/dist/index.js
+index 55cc492..f3d7d21 100644
+--- a/node_modules/@react-native-voice/voice/dist/index.js
++++ b/node_modules/@react-native-voice/voice/dist/index.js
+@@ -4,8 +4,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
+ };
+ Object.defineProperty(exports, "__esModule", { value: true });
+ const react_native_1 = require("react-native");
+ const invariant_1 = __importDefault(require("invariant"));
+-const Voice = react_native_1.NativeModules.Voice;
++const Voice = react_native_1.NativeModules.Voice ?? react_native_1.NativeModules.RCTVoice;
++const voiceEmitterModule = Voice &&
++    typeof Voice.addListener === 'function' &&
++    typeof Voice.removeListeners === 'function'
++    ? Voice
++    : undefined;
+ // NativeEventEmitter is only availabe on React Native platforms, so this conditional is used to avoid import conflicts in the browser/server
+-const voiceEmitter = react_native_1.Platform.OS !== 'web' ? new react_native_1.NativeEventEmitter(Voice) : null;
++const voiceEmitter = react_native_1.Platform.OS !== 'web' ? new react_native_1.NativeEventEmitter(voiceEmitterModule) : null;
+ class RCTVoice {
+diff --git a/node_modules/@react-native-voice/voice/src/index.ts b/node_modules/@react-native-voice/voice/src/index.ts
+index 3c32559..ac4d7bb 100644
+--- a/node_modules/@react-native-voice/voice/src/index.ts
++++ b/node_modules/@react-native-voice/voice/src/index.ts
+@@ -11,10 +11,16 @@ import {
+   SpeechVolumeChangeEvent,
+ } from './VoiceModuleTypes';
+ 
+-const Voice = NativeModules.Voice as VoiceModule;
++const Voice = (NativeModules.Voice ?? NativeModules.RCTVoice) as VoiceModule;
++const voiceEmitterModule =
++  Voice &&
++  typeof (Voice as unknown as { addListener?: unknown }).addListener === 'function' &&
++  typeof (Voice as unknown as { removeListeners?: unknown }).removeListeners === 'function'
++    ? Voice
++    : undefined;
+ 
+ // NativeEventEmitter is only availabe on React Native platforms, so this conditional is used to avoid import conflicts in the browser/server
+ const voiceEmitter =
+-  Platform.OS !== 'web' ? new NativeEventEmitter(Voice) : null;
++  Platform.OS !== 'web' ? new NativeEventEmitter(voiceEmitterModule) : null;

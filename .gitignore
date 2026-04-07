@@ -1,0 +1,65 @@
+### Frontend
+.expo/
+.expo-shared/
+dist/
+node_modules/
+npm-debug.log
+yarn-error.log
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+
+### Backend
+backend/build/
+backend/.gradle/
+backend/out/
+backend/*.iml
+backend/.classpath
+backend/.project
+backend/.settings/
+backend/.vscode/
+backend/.DS_Store
+backend/target/
+
+### IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+### Environment
+.env
+.env.local
+.env.*.local
+
+### Docker
+postgres_data/
+
+### OS
+Thumbs.db
+.DS_Store
+
+### Misc
+*.log
+*.pid
+*.seed
+*.pid.lock
+*.stackdump
+bash.exe.stackdump
+
+### React Native temp caches
+FocusPetApp/.tmp-patch-package/
+FocusPetApp/.tmp/
+FocusPetApp/android/.gradle/
+FocusPetApp/android/app/build/
+FocusPetApp/android/build/
+FocusPetApp/ios/build/
+FocusPetApp/ios/DerivedData/
+FocusPetApp/*.apk
+FocusPetApp/*.aab
