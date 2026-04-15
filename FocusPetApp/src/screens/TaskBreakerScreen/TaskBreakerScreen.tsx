@@ -128,7 +128,7 @@ export default function TaskBreakerScreen({ navigation }: Props) {
     const addResult = addTask(task);
     if (!addResult.ok) {
       if (addResult.reason === 'duplicate-time') {
-        Alert.alert('Duplikaatti', 'Samaa tehtavaa ei voi lisata samaan kellonaikaan samalle paivalle.');
+        Alert.alert('Duplikaatti', 'Samaa tehtävää ei voi lisätä samaan kellonaikaan samalle päivälle.');
       } else if (addResult.reason === 'brushing-time-restricted') {
         Alert.alert('Aikarajoitus', 'Hammaspesu voidaan ajastaa vain aamuun (05:00-10:59) tai iltaan (18:00-22:59).');
       }

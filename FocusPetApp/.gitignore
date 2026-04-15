@@ -2,6 +2,13 @@
 #
 .DS_Store
 
+# Environment variables
+.env
+.env.local
+
+# App secrets (copy secrets.example.ts → secrets.ts and fill in values)
+src/config/secrets.ts
+
 # Xcode
 #
 build/

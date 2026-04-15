@@ -12,8 +12,12 @@ export function useSpeechAssistant(enabled: boolean) {
 
     try {
       Tts.setDefaultLanguage('fi-FI').catch(() => undefined);
-      Tts.setDefaultRate(0.47);
-      Tts.setDefaultPitch(1.0);
+      Tts.setDefaultRate(0.5);
+      Tts.setDefaultPitch(1.0); // normaali miesääni
+      // fim = Finnish male — käytetään ensisijaisesti
+      Tts.setDefaultVoice('fi-fi-x-fim-local').catch(() =>
+        Tts.setDefaultVoice('fi-fi-x-fim-network').catch(() => undefined),
+      );
     } catch {
       return;
     }

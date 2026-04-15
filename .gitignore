@@ -63,3 +63,4 @@ FocusPetApp/ios/build/
 FocusPetApp/ios/DerivedData/
 FocusPetApp/*.apk
 FocusPetApp/*.aab
+.env

@@ -33,6 +33,8 @@ export interface Task {
   totalCoins: number;
   createdAt: string;
   completedAt?: string;
+  /** HH:MM — if set, this task blocks the time window [title-time, blockUntil) */
+  blockUntil?: string;
 }
 
 export interface ShopItem {
@@ -41,4 +43,13 @@ export interface ShopItem {
   emoji: string;
   cost: number;
   owned: boolean;
+}
+
+export type WeekdayKey = 'ma' | 'ti' | 'ke' | 'to' | 'pe';
+
+export interface HomeArrivalRule {
+  day: WeekdayKey;
+  sourceLabel: string;
+  arrivalStart: string;
+  arrivalEnd: string;
 }

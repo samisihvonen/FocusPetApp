@@ -194,6 +194,14 @@ export default function FocusModeScreen({ navigation, route }: Props) {
     handleStepComplete(currentStep.id);
   };
 
+  const handleBrushingSkip = () => {
+    if (!currentStep || currentStep.isDone) {
+      return;
+    }
+    speak('Hammaspesu ohitettu. Jatketaan seuraavaan askeleeseen.');
+    handleStepComplete(currentStep.id);
+  };
+
   return (
     <SafeAreaView style={styles.safe}>
       {/* ── Dopamine star burst overlay ─────────────────── */}
@@ -256,7 +264,7 @@ export default function FocusModeScreen({ navigation, route }: Props) {
 
         {!isAvailable && (
           <Text style={styles.audioHint}>
-            Puheohjaus ei ole kaytettavissa tassa buildissa. Visuaaliset vihjeet ja haptinen palaute toimivat silti.
+            Puheohjaus ei ole käytettävissä tässä buildissa. Visuaaliset vihjeet ja haptinen palaute toimivat silti.
           </Text>
         )}
 
@@ -267,6 +275,7 @@ export default function FocusModeScreen({ navigation, route }: Props) {
           <BrushingTimer
             autoStartToken={brushingStartToken}
             onComplete={handleBrushingComplete}
+            onSkip={handleBrushingSkip}
             onZoneChange={(zone) => {
               speak(`Harjaa nyt alue: ${zone}.`);
             }}

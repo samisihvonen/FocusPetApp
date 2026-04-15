@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import Sound from 'react-native-sound';
+import { AppState, Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { COLORS, FONT, RADIUS } from '../../constants/theme';
 
 const BRUSH_DURATION_SECONDS = 120;
@@ -14,19 +13,17 @@ const BRUSHING_ZONES = [
 
 type Props = {
   onComplete?: () => void;
+  onSkip?: () => void;
   onZoneChange?: (zone: string, secondsPerZone: number) => void;
   autoStartToken?: number;
 };
 
-export default function BrushingTimer({ onComplete, onZoneChange, autoStartToken }: Props) {
+export default function BrushingTimer({ onComplete, onSkip, onZoneChange, autoStartToken }: Props) {
   const [secondsLeft, setSecondsLeft] = useState(BRUSH_DURATION_SECONDS);
   const [isRunning, setIsRunning] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
-  const [soundReady, setSoundReady] = useState(false);
-  const [soundFailed, setSoundFailed] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const deadlineRef = useRef<number | null>(null);
-  const soundRef = useRef<Sound | null>(null);
   const brushTilt = useRef(new Animated.Value(0)).current;
   const bubbleOne = useRef(new Animated.Value(0)).current;
   const bubbleTwo = useRef(new Animated.Value(0)).current;
@@ -59,32 +56,24 @@ export default function BrushingTimer({ onComplete, onZoneChange, autoStartToken
   const announcedZoneRef = useRef<number | null>(null);
 
   useEffect(() => {
-    Sound.setCategory('Playback');
-
-    try {
-      soundRef.current = new Sound('brush_relax.wav', Sound.MAIN_BUNDLE, error => {
-        if (error) {
-          setSoundFailed(true);
-          return;
-        }
-        soundRef.current?.setNumberOfLoops(-1);
-        soundRef.current?.setVolume(0.55);
-        setSoundReady(true);
-      });
-    } catch {
-      setSoundFailed(true);
-    }
-
     return () => {
       if (timerRef.current) {
         clearInterval(timerRef.current);
       }
       deadlineRef.current = null;
-      soundRef.current?.stop();
-      soundRef.current?.release();
-      soundRef.current = null;
     };
   }, []);
+
+  // Pause timer when app goes to background
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', (state) => {
+      if (state !== 'active' && isRunning) {
+        setIsRunning(false);
+        deadlineRef.current = null;
+      }
+    });
+    return () => sub.remove();
+  }, [isRunning]);
 
   useEffect(() => {
     const tiltLoop = Animated.loop(
@@ -157,25 +146,24 @@ export default function BrushingTimer({ onComplete, onZoneChange, autoStartToken
     }
   }, [autoStartToken, isFinished, isRunning]);
 
+  const stopTimer = () => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+    deadlineRef.current = null;
+    setIsRunning(false);
+  };
+
   useEffect(() => {
     const finishBrushing = () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
-      deadlineRef.current = null;
-      setIsRunning(false);
+      stopTimer();
       setIsFinished(true);
-      soundRef.current?.stop();
       onComplete?.();
     };
 
     if (!isRunning) {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-        timerRef.current = null;
-      }
-      deadlineRef.current = null;
+      stopTimer();
       return;
     }
 
@@ -200,17 +188,13 @@ export default function BrushingTimer({ onComplete, onZoneChange, autoStartToken
       setSecondsLeft(prev => (prev === nextSeconds ? prev : nextSeconds));
     }, 250);
 
-    if (soundReady) {
-      soundRef.current?.play(() => undefined);
-    }
-
     return () => {
       if (timerRef.current) {
         clearInterval(timerRef.current);
         timerRef.current = null;
       }
     };
-  }, [isRunning, onComplete, secondsLeft, soundReady]);
+  }, [isRunning, onComplete, secondsLeft]);
 
   const toggleTimer = () => {
     if (isFinished) {
@@ -221,13 +205,19 @@ export default function BrushingTimer({ onComplete, onZoneChange, autoStartToken
     }
 
     if (isRunning) {
-      setIsRunning(false);
-      deadlineRef.current = null;
-      soundRef.current?.pause();
+      stopTimer();
       return;
     }
 
     setIsRunning(true);
+  };
+
+  const handleSkip = () => {
+    stopTimer();
+    setIsFinished(false);
+    announcedZoneRef.current = null;
+    setSecondsLeft(BRUSH_DURATION_SECONDS);
+    onSkip?.();
   };
 
   const minutes = String(Math.floor(secondsLeft / 60)).padStart(2, '0');
@@ -353,18 +343,13 @@ export default function BrushingTimer({ onComplete, onZoneChange, autoStartToken
           : `${currentZone}. Pienet pyorat liikkeet ja rauhallinen tempo.`}
       </Text>
 
-      <Text style={styles.musicStatus}>
-        {soundFailed
-          ? 'Musiikki ei ole saatavilla tassa buildissa, mutta animaatio toimii.'
-          : soundReady
-            ? 'Rauhoittava taustamusiikki on mukana.'
-            : 'Ladataan rauhallista taustamusiikkia...'}
-      </Text>
-
       <TouchableOpacity style={styles.button} onPress={toggleTimer} activeOpacity={0.85}>
         <Text style={styles.buttonText}>
           {isFinished ? '🔁 Aloita uudelleen' : isRunning ? '⏸️ Tauko' : '▶️ Aloita 2 min'}
         </Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.skipButton} onPress={handleSkip} activeOpacity={0.85}>
+        <Text style={styles.skipButtonText}>⏭️ Ohita hampaiden pesu</Text>
       </TouchableOpacity>
     </View>
   );
@@ -509,13 +494,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 12,
   },
-  musicStatus: {
-    color: '#BFDBFE',
-    fontSize: 12,
-    lineHeight: 18,
-    textAlign: 'center',
-    marginTop: 8,
-  },
   button: {
     backgroundColor: COLORS.success,
     borderRadius: RADIUS.md,
@@ -528,6 +506,22 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontSize: 15,
+    fontWeight: '800',
+  },
+  skipButton: {
+    backgroundColor: 'transparent',
+    borderRadius: RADIUS.md,
+    borderWidth: 2,
+    borderColor: '#93C5FD',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginTop: 10,
+    minWidth: 180,
+    alignItems: 'center',
+  },
+  skipButtonText: {
+    color: '#DBEAFE',
+    fontSize: 14,
     fontWeight: '800',
   },
 });

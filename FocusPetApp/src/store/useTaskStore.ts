@@ -16,10 +16,10 @@ type RoutineTemplate = {
 
 type AddTaskResult = {
   ok: boolean;
-  reason?: 'duplicate-time' | 'brushing-time-restricted';
+  reason?: 'duplicate-time' | 'brushing-time-restricted' | 'conflict-time';
 };
 
-const DAILY_ROUTINE_TEMPLATES: RoutineTemplate[] = [
+export const DAILY_ROUTINE_TEMPLATES: RoutineTemplate[] = [
   {
     time: '07:30',
     title: 'Aamun valmistautuminen',
@@ -46,17 +46,17 @@ const DAILY_ROUTINE_TEMPLATES: RoutineTemplate[] = [
   },
   {
     time: '14:00',
-    title: 'Iltapaivan laksyt',
+    title: 'Iltapäivän läksyt',
     steps: [
       {
         emoji: '📚',
-        description: 'Tee laksyt 20-30 minuuttia',
+        description: 'Tee läksyt 20–30 minuuttia',
         xpReward: 18,
         coinReward: 5,
       },
       {
         emoji: '✅',
-        description: 'Tarkista etta kaikki tehtavat on tehty',
+        description: 'Tarkista että kaikki tehtävät on tehty',
         xpReward: 10,
         coinReward: 3,
       },
@@ -64,17 +64,17 @@ const DAILY_ROUTINE_TEMPLATES: RoutineTemplate[] = [
   },
   {
     time: '14:30',
-    title: 'Valipalahetki',
+    title: 'välipalahetki',
     steps: [
       {
         emoji: '🍎',
-        description: 'Syo valipala ja juo vetta',
+        description: 'Syo välipala ja juo vetta',
         xpReward: 12,
         coinReward: 3,
       },
       {
         emoji: '🧽',
-        description: 'Siivoa valipalapaikka nopeasti',
+        description: 'Siivoa välipalapaikka nopeasti',
         xpReward: 8,
         coinReward: 2,
       },
@@ -124,7 +124,7 @@ const DAILY_ROUTINE_TEMPLATES: RoutineTemplate[] = [
   },
   {
     time: '20:30',
-    title: 'Rauhoittuminen',
+    title: 'Nukkumaan meneminen',
     steps: [
       {
         emoji: '📵',
@@ -133,20 +133,184 @@ const DAILY_ROUTINE_TEMPLATES: RoutineTemplate[] = [
         coinReward: 2,
       },
       {
-        emoji: '🫧',
-        description: 'Hengita rauhassa 1 minuutti',
+        emoji: '🛏️',
+        description: 'Mene sänkyyn ja asetu mukavasti',
         xpReward: 10,
         coinReward: 3,
       },
       {
         emoji: '🌙',
-        description: 'Mene nukkumaan ajoissa',
+        description: 'Sulje silmät ja nuku hyvin',
         xpReward: 14,
         coinReward: 4,
       },
     ],
   },
 ];
+
+export const WEEKEND_ROUTINE_TEMPLATES: RoutineTemplate[] = [
+  {
+    time: '09:00',
+    title: 'Rauhallinen aamu',
+    steps: [
+      {
+        emoji: '🛏️',
+        description: 'Nouse sängystä omaan tahtiin',
+        xpReward: 6,
+        coinReward: 2,
+      },
+      {
+        emoji: '🧼',
+        description: 'Pese kasvot ja käy kylpyhuoneessa',
+        xpReward: 8,
+        coinReward: 2,
+      },
+      {
+        emoji: '🥞',
+        description: 'Syö hyvä aamupala tai brunssi',
+        xpReward: 10,
+        coinReward: 3,
+      },
+    ],
+  },
+  {
+    time: '11:00',
+    title: 'Ulkoilu tai harrastus',
+    steps: [
+      {
+        emoji: '🌳',
+        description: 'Mene ulos — pyöräile, kävele tai leiki',
+        xpReward: 16,
+        coinReward: 5,
+      },
+      {
+        emoji: '🏒',
+        description: 'Tai mene harjoituksiin jos on vuoro',
+        xpReward: 20,
+        coinReward: 6,
+      },
+    ],
+  },
+  {
+    time: '13:30',
+    title: 'Lounas',
+    steps: [
+      {
+        emoji: '🍽️',
+        description: 'Syö lounas yhdessä perheen kanssa',
+        xpReward: 10,
+        coinReward: 3,
+      },
+      {
+        emoji: '🧽',
+        description: 'Auta siivoamaan ruokapöytä',
+        xpReward: 8,
+        coinReward: 2,
+      },
+    ],
+  },
+  {
+    time: '15:00',
+    title: 'Välipalahetki',
+    steps: [
+      {
+        emoji: '🍎',
+        description: 'Syö välipala ja juo vettä',
+        xpReward: 10,
+        coinReward: 3,
+      },
+    ],
+  },
+  {
+    time: '16:00',
+    title: 'Vapaa-aika',
+    steps: [
+      {
+        emoji: '🎮',
+        description: 'Voit pelata tai katsoa videoita sovitusti',
+        xpReward: 6,
+        coinReward: 2,
+      },
+      {
+        emoji: '🎨',
+        description: 'Tai tee jotain luovaa — piirrä, rakenna, lue',
+        xpReward: 12,
+        coinReward: 3,
+      },
+    ],
+  },
+  {
+    time: '17:30',
+    title: 'Pieni kotitehtävä',
+    steps: [
+      {
+        emoji: '🧹',
+        description: 'Siivoa oma huone pikaisesti',
+        xpReward: 10,
+        coinReward: 3,
+      },
+      {
+        emoji: '📘',
+        description: 'Tarkista onko kouluun jotain valmisteltavaa',
+        xpReward: 8,
+        coinReward: 2,
+      },
+    ],
+  },
+  {
+    time: '19:30',
+    title: 'Iltarutiini',
+    steps: [
+      {
+        emoji: '🪥',
+        description: 'Pese hampaat kaksi minuuttia',
+        xpReward: 16,
+        coinReward: 4,
+      },
+      {
+        emoji: '🧴',
+        description: 'Pese kasvot ja vaihda yövaatteet',
+        xpReward: 10,
+        coinReward: 3,
+      },
+      {
+        emoji: '📘',
+        description: 'Valmistele huominen: vaatteet ja reppu',
+        xpReward: 12,
+        coinReward: 3,
+      },
+    ],
+  },
+  {
+    time: '21:00',
+    title: 'Nukkumaan meneminen',
+    steps: [
+      {
+        emoji: '📵',
+        description: 'Laita puhelin sivuun',
+        xpReward: 8,
+        coinReward: 2,
+      },
+      {
+        emoji: '🛏️',
+        description: 'Mene sänkyyn ja asetu mukavasti',
+        xpReward: 10,
+        coinReward: 3,
+      },
+      {
+        emoji: '🌙',
+        description: 'Sulje silmät ja nuku hyvin',
+        xpReward: 14,
+        coinReward: 4,
+      },
+    ],
+  },
+];
+
+function isWeekend(date: Date): boolean {
+  const day = date.getDay();
+  return day === 0 || day === 6;
+}
 
 function localDateKey(date: Date): string {
   const y = date.getFullYear();
@@ -186,6 +350,11 @@ function isMorningOrEvening(hour: number): boolean {
   return isMorning || isEvening;
 }
 
+function toMinutes(hhmm: string): number {
+  const [h, m] = hhmm.split(':').map(Number);
+  return h * 60 + m;
+}
+
 function createRoutineTask(template: RoutineTemplate, nowIso: string): Task {
   const taskId = `routine-${template.time}-${Math.random()
     .toString(36)
@@ -218,17 +387,22 @@ interface TaskStore {
   tasks: Task[];
   activeTask: Task | null;
   lastRoutineSeedDate: string | null;
+  lastHobbySyncDate: string | null;
   addTask: (task: Task) => AddTaskResult;
   setActiveTask: (task: Task | null) => void;
   completeStep: (taskId: string, stepId: string) => void;
   completeTask: (taskId: string) => void;
+  removeTask: (taskId: string) => void;
+  resetDailyRoutines: () => void;
   ensureDailyRoutines: () => void;
+  markHobbySynced: () => void;
 }
 
 export const useTaskStore = create<TaskStore>()(set => ({
   tasks: [],
   activeTask: null,
   lastRoutineSeedDate: null,
+  lastHobbySyncDate: null,
 
   addTask: task => {
     let result: AddTaskResult = { ok: true };
@@ -247,12 +421,44 @@ export const useTaskStore = create<TaskStore>()(set => ({
 
       if (timedTask) {
         const newTaskDay = localDateKey(new Date(task.createdAt));
-        const duplicateExists = s.tasks.some(existing => {
-          const existingTimed = parseTimedTaskTitle(existing.title);
-          if (!existingTimed) {
-            return false;
-          }
+        const newMin = timedTask.hour * 60 + timedTask.minute;
 
+        // Block: new task falls inside an existing task's blockUntil window
+        const blocked = s.tasks.some(existing => {
+          if (!existing.blockUntil) return false;
+          const existingTimed = parseTimedTaskTitle(existing.title);
+          if (!existingTimed) return false;
+          const sameDay =
+            localDateKey(new Date(existing.createdAt)) === newTaskDay;
+          if (!sameDay) return false;
+          const existingStart = existingTimed.hour * 60 + existingTimed.minute;
+          const existingEnd = toMinutes(existing.blockUntil);
+          return newMin > existingStart && newMin < existingEnd;
+        });
+        if (blocked) {
+          result = { ok: false, reason: 'conflict-time' };
+          return s;
+        }
+
+        // Clear: new task has blockUntil → remove idle tasks inside its window
+        let tasks = s.tasks;
+        if (task.blockUntil) {
+          const newEnd = toMinutes(task.blockUntil);
+          tasks = s.tasks.filter(existing => {
+            if (existing.status !== 'idle') return true;
+            const existingTimed = parseTimedTaskTitle(existing.title);
+            if (!existingTimed) return true;
+            const sameDay =
+              localDateKey(new Date(existing.createdAt)) === newTaskDay;
+            if (!sameDay) return true;
+            const existingMin = existingTimed.hour * 60 + existingTimed.minute;
+            return !(existingMin > newMin && existingMin < newEnd);
+          });
+        }
+
+        const duplicateExists = tasks.some(existing => {
+          const existingTimed = parseTimedTaskTitle(existing.title);
+          if (!existingTimed) return false;
           const sameDay =
             localDateKey(new Date(existing.createdAt)) === newTaskDay;
           const sameTime =
@@ -260,7 +466,6 @@ export const useTaskStore = create<TaskStore>()(set => ({
             existingTimed.minute === timedTask.minute;
           const sameTitle =
             existingTimed.normalizedTitle === timedTask.normalizedTitle;
-
           return sameDay && sameTime && sameTitle;
         });
 
@@ -268,6 +473,8 @@ export const useTaskStore = create<TaskStore>()(set => ({
           result = { ok: false, reason: 'duplicate-time' };
           return s;
         }
+
+        return { ...s, tasks: [task, ...tasks] };
       }
 
       return { ...s, tasks: [task, ...s.tasks] };
@@ -306,6 +513,22 @@ export const useTaskStore = create<TaskStore>()(set => ({
       activeTask: null,
     })),
 
+  removeTask: taskId =>
+    set(s => ({
+      tasks: s.tasks.filter(t => t.id !== taskId),
+      activeTask: s.activeTask?.id === taskId ? null : s.activeTask,
+    })),
+
+  resetDailyRoutines: () =>
+    set(s => ({
+      ...s,
+      tasks: s.tasks.filter(t => !ROUTINE_TITLE_REGEX.test(t.title)),
+      lastRoutineSeedDate: null,
+    })),
+
+  markHobbySynced: () =>
+    set(() => ({ lastHobbySyncDate: localDateKey(new Date()) })),
+
   ensureDailyRoutines: () =>
     set(s => {
       const todayKey = localDateKey(new Date());
@@ -330,7 +553,10 @@ export const useTaskStore = create<TaskStore>()(set => ({
       }
 
       const nowIso = new Date().toISOString();
-      const generatedTasks = DAILY_ROUTINE_TEMPLATES.map(template =>
+      const templates = isWeekend(new Date())
+        ? WEEKEND_ROUTINE_TEMPLATES
+        : DAILY_ROUTINE_TEMPLATES;
+      const generatedTasks = templates.map(template =>
         createRoutineTask(template, nowIso),
       );
 

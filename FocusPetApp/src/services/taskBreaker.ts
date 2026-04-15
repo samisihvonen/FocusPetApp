@@ -22,7 +22,7 @@ import { Step } from '../types';
 const OLLAMA_MODEL = 'llama3.1:8b';
 const OLLAMA_URLS = [
   'http://10.0.2.2:11434/v1/chat/completions', // Android Emulator (VirtualBox/Hyper-V)
-  'http://localhost:11434/v1/chat/completions',  // Local development (Windows/Mac/Linux)
+  'http://localhost:11434/v1/chat/completions', // Local development (Windows/Mac/Linux)
 ];
 
 const OPENAI_URL = 'https://api.openai.com/v1/chat/completions';
@@ -49,22 +49,24 @@ type RoutineTask = {
 };
 
 // ─── System prompt — the "soul" of the Task Breaker ──────────────────────────
-const SYSTEM_PROMPT = `Olet FocusPet-sovelluksen tehtäväavustaja lapsille (7-12-vuotiaille).
-Tehtäväsi on pilkkoa arjen tehtävä 3–5 pieneen, hauskaan askeleeseen.
+const SYSTEM_PROMPT = `Olet FocusPet-sovelluksen hauska ja kannustava kaveri lapsille (7-12-vuotiaille). 🦉
+Sinulla on iloinen, lämmin äänensävy — kuin paras kaveri, joka auttaa ilman tuomitsemista.
+Pilko tehtävä 3–5 pieneen askeleeseen niin, että se tuntuu helpolta ja kivalta!
 
 SÄÄNNÖT:
-• Jokainen askel alkaa toimintaverbillä (Kerää, Laita, Petaa, Pese, Siirrä...).
-• Maksimissaan 8 sanaa per askel. Lyhyt ja selkeä!
-• Jokainen askel sisältää yhden emojin alussa.
-• Käytä yksinkertaista, rohkaisevaa kieltä — kuin kaveri puhuisi.
-• ÄLÄ käytä vaikeita sanoja tai pitkiä lauseita.
-• Askelet etenevät loogisessa järjestyksessä.
+• Jokainen askel alkaa mukavalla toimintaverbillä (Kerää, Laita, Petaa, Pese, Valitse...).
+• Maksimissaan 8 sanaa per askel — lyhyt, selkeä ja positiivinen!
+• Jokainen askel alkaa yhdellä hauskalla emojilla.
+• Puhu kuin kaveri: "Nappaa", "Laita", "Hommaa" — ei käskyttävästi.
+• Lisää kannustavia sanoja: "rauhassa", "helposti", "siististi", "kivasti".
+• ÄLÄ käytä vaikeita sanoja, kieltolauseita tai pitkiä lauseita.
+• Askelet etenevät loogisessa, luontevassa järjestyksessä.
 
 VASTAA AINOASTAAN validissa JSON-muodossa, ilman muuta tekstiä:
 {
   "steps": [
-    { "emoji": "🗑️", "description": "Kerää roskat lattialta" },
-    { "emoji": "🧸", "description": "Laita lelut omaan laatikkoon" }
+    { "emoji": "🗑️", "description": "Kerää roskat lattialta rauhassa" },
+    { "emoji": "🧸", "description": "Laita lelut kivasti omaan paikkaan" }
   ]
 }`;
 
@@ -72,7 +74,7 @@ const ROUTINE_PROMPT = `Olet FocusPet-sovelluksen päivärytmiavustaja lapselle.
 Luo päivän tehtävälista suunnilleen kellonaikojen mukaan.
 
 SÄÄNNÖT:
-• Käytä arkisia tehtäviä: aamupala, hampaidenpesu, laakkeiden ottaminen, vaatteiden pukeminen, koulurepun pakkaaminen, syominen, laksyt, ulkoilu, iltapala, hampaiden pesu.
+• Käytä arkisia tehtäviä: aamupala, hampaiden pesu, lääkkeiden ottaminen, vaatteiden pukeminen, koulurepun pakkaaminen, syöminen, läksyt, ulkoilu, iltapala, hampaiden pesu.
 • Palauta 8-10 tehtävää.
 • Järjestä ne aikajärjestykseen aamusta iltaan.
 • Aika formaatti aina HH:MM (24h).
@@ -270,6 +272,59 @@ const FALLBACK_STEPS: Record<
     { emoji: '✏️', description: 'Lue tehtävä rauhassa ensin' },
     { emoji: '📝', description: 'Tee tehtävät yksi kerrallaan' },
     { emoji: '✅', description: 'Tarkista vastaukset lopuksi' },
+  ],
+  aamupala: [
+    { emoji: '🥣', description: 'Valitse mitä syöt aamupalaksi' },
+    { emoji: '🍞', description: 'Valmista tai kaada aamupala' },
+    { emoji: '🪑', description: 'Istu rauhassa ja syö' },
+    { emoji: '🚿', description: 'Vie astiat tiskipöydälle' },
+  ],
+  hampaat: [
+    { emoji: '🪥', description: 'Ota hammasharja ja tahna esille' },
+    { emoji: '💧', description: 'Laita sopiva määrä tahnaa harjalle' },
+    { emoji: '🦷', description: 'Harja hampaat kaksi minuuttia' },
+    { emoji: '💦', description: 'Huuhtele suu ja laita tavarat pois' },
+  ],
+  vaatteet: [
+    { emoji: '👚', description: 'Valitse tänään sopivat vaatteet' },
+    { emoji: '👕', description: 'Pue paita tai pusero päälle' },
+    { emoji: '👖', description: 'Pue housut ja sukat jalkaan' },
+    { emoji: '🪞', description: 'Tarkista että näytät hyvältä' },
+  ],
+  reppu: [
+    { emoji: '📅', description: 'Tarkista mitä aineita on tänään' },
+    { emoji: '📚', description: 'Laita kirjat ja vihkot reppuun' },
+    { emoji: '✏️', description: 'Muista penaalikotelo mukaan' },
+    { emoji: '🎒', description: 'Sulje reppu ja laita ovelle' },
+  ],
+  välipala: [
+    { emoji: '🍎', description: 'Valitse mieluisa välipala' },
+    { emoji: '🍽️', description: 'Valmista välipala tai kaada juoma' },
+    { emoji: '🪑', description: 'Istu alas ja syö rauhassa' },
+    { emoji: '🧼', description: 'Laita astiat pois syötyäsi' },
+  ],
+  ulkoilu: [
+    { emoji: '👟', description: 'Pue kengät ja takki päälle' },
+    { emoji: '🔑', description: 'Ota avaimet mukaan' },
+    { emoji: '🚪', description: 'Mene ulos ja sulje ovi' },
+    { emoji: '🌳', description: 'Nauti ulkoilusta ja liiku' },
+  ],
+  päivällinen: [
+    { emoji: '🧼', description: 'Pese kädet ennen ruokailua' },
+    { emoji: '🪑', description: 'Istu pöytään rauhassa' },
+    { emoji: '🍽️', description: 'Syö ruoka hitaasti nauttien' },
+    { emoji: '🫙', description: 'Vie lautanen tiskipöydälle' },
+  ],
+  iltapala: [
+    { emoji: '🥛', description: 'Valitse iltapala ja kaada juoma' },
+    { emoji: '🪑', description: 'Istu rauhassa ja syö' },
+    { emoji: '🧼', description: 'Laita astiat tiskipöydälle' },
+    { emoji: '😴', description: 'Valmistaudu rauhoittumaan illaksi' },
+  ],
+  laakkeet: [
+    { emoji: '💊', description: 'Ota oikeat lääkkeet esille' },
+    { emoji: '💧', description: 'Kaada lasi vettä' },
+    { emoji: '✅', description: 'Ota lääkkeet vesilasillisen kera' },
   ],
   default: [
     { emoji: '🎯', description: 'Kerää tarvittavat tavarat valmiiksi' },
