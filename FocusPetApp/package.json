@@ -19,7 +19,7 @@
     "react-native": "^0.79.2",
     "react-native-image-picker": "^8.2.1",
     "react-native-safe-area-context": "^5.4.0",
-    "react-native-screens": "^3.31.1",
+    "react-native-screens": "^3.34.0",
     "react-native-sound": "^0.13.0",
     "zustand": "^5.0.12"
   },
