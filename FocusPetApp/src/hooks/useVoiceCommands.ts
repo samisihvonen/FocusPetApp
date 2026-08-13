@@ -60,25 +60,11 @@ function isRecognizerBusyError(error: unknown): boolean {
 }
 
 function getVoiceModule(): VoiceModuleShape | null {
-  // react-native-voice uses NativeModules.Voice internally.
-  if (!NativeModules?.Voice && !NativeModules?.RCTVoice) {
-    return null;
-  }
-
-  try {
-    const required = require('@react-native-voice/voice');
-    const moduleRef = required.default as VoiceModuleShape;
-    if (
-      moduleRef &&
-      typeof moduleRef.start === 'function' &&
-      typeof moduleRef.stop === 'function'
-    ) {
-      return moduleRef;
-    }
-    return null;
-  } catch {
-    return null;
-  }
+  // Stubbed voice module for simplified MVP builds.
+  // The original implementation used @react-native-voice/voice which
+  // is removed in the lightweight variant. Return null to indicate
+  // the feature is unavailable in this build.
+  return null;
 }
 
 export function useVoiceCommands(options: UseVoiceCommandsOptions = {}) {

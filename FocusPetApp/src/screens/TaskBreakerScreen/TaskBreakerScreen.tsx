@@ -281,10 +281,8 @@ export default function TaskBreakerScreen({ navigation }: Props) {
 
         {!isAvailable && (
           <Text style={styles.audioHint}>
-            ⚠️ Puheentunnistus ei ole käytössä. Ratkaisut:
-            1. npm run android (Android native build)
-            2. npm run ios (iOS build)
-            3. Varmista @react-native-voice/voice asennus
+            ⚠️ Puheentunnistus ei ole käytössä tässä buildissa.
+            Jos haluat käyttää puheohjausta, käynnistä sovellus natiivirakennuksella tai ota ominaisuus käyttöön erikseen.
           </Text>
         )}
 

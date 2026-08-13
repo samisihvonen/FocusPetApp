@@ -48,11 +48,36 @@ interface UserStore extends UserState {
 }
 
 const DEFAULT_HOME_ARRIVAL_RULES: HomeArrivalRule[] = [
-  { day: 'ma', sourceLabel: 'Koulu', arrivalStart: '14:20', arrivalEnd: '14:45' },
-  { day: 'ti', sourceLabel: 'Iltis', arrivalStart: '14:20', arrivalEnd: '14:45' },
-  { day: 'ke', sourceLabel: 'Sahlykerho', arrivalStart: '15:40', arrivalEnd: '16:00' },
-  { day: 'to', sourceLabel: 'Koulu / harrastusryhma', arrivalStart: '14:00', arrivalEnd: '14:30' },
-  { day: 'pe', sourceLabel: 'Iltis', arrivalStart: '15:00', arrivalEnd: '15:20' },
+  {
+    day: 'ma',
+    sourceLabel: 'Koulu',
+    arrivalStart: '14:20',
+    arrivalEnd: '14:45',
+  },
+  {
+    day: 'ti',
+    sourceLabel: 'Harrastus',
+    arrivalStart: '14:20',
+    arrivalEnd: '14:45',
+  },
+  {
+    day: 'ke',
+    sourceLabel: 'Sahlykerho',
+    arrivalStart: '15:40',
+    arrivalEnd: '16:00',
+  },
+  {
+    day: 'to',
+    sourceLabel: 'Koulu / harrastusryhma',
+    arrivalStart: '14:00',
+    arrivalEnd: '14:30',
+  },
+  {
+    day: 'pe',
+    sourceLabel: 'Harrastus',
+    arrivalStart: '15:00',
+    arrivalEnd: '15:20',
+  },
 ];
 
 export const useUserStore = create<UserStore>()((set, get) => ({

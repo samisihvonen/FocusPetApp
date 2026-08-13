@@ -3,29 +3,16 @@ import { Animated, TouchableOpacity } from 'react-native';
 import ReactTestRenderer from 'react-test-renderer';
 import BrushingTimer from '../../src/components/BrushingTimer/BrushingTimer';
 
+// Stub react-native-sound for tests (no native binaries in CI)
 jest.mock('react-native-sound', () => {
-  const MockSound = jest.fn(function (
-    this: any,
-    _filename: string,
-    _bundle: string,
-    onLoad?: (error: unknown) => void,
-  ) {
-    this.setNumberOfLoops = jest.fn();
-    this.setVolume = jest.fn();
-    this.play = jest.fn((cb?: (ok: boolean) => void) => cb?.(true));
-    this.stop = jest.fn();
-    this.pause = jest.fn();
-    this.release = jest.fn();
-
-    if (onLoad) {
-      onLoad(null);
-    }
-  });
-
-  (MockSound as any).MAIN_BUNDLE = 'main_bundle';
-  (MockSound as any).setCategory = jest.fn();
-
-  return MockSound;
+  return jest.fn().mockImplementation(() => ({
+    setNumberOfLoops: jest.fn(),
+    setVolume: jest.fn(),
+    play: jest.fn((cb?: (ok: boolean) => void) => cb?.(true)),
+    stop: jest.fn(),
+    pause: jest.fn(),
+    release: jest.fn(),
+  }));
 });
 
 describe('BrushingTimer', () => {

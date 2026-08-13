@@ -1,21 +1,34 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
-# Getting Started
+# FocusPet — Local MVP (simplified)
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+Lightweight React Native app focused on a local, offline-first MVP. This README explains how to run the app and the minimal scope for version 1.
 
-## Step 1: Start Metro
+Quick start
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
-
-To start the Metro dev server, run the following command from the root of your React Native project:
+1. Install dependencies:
 
 ```sh
-# Using npm
-npm start
+npm install
+```
 
-# OR using Yarn
-yarn start
+2. Start Metro:
+
+```sh
+npm start
+```
+
+3. Run on Android (device/emulator):
+
+```sh
+npm run android
+```
+
+4. Run on iOS (macOS + CocoaPods):
+
+```sh
+# bundle install
+# bundle exec pod install
+npm run ios
 ```
 
 ## Step 2: Build and run your app

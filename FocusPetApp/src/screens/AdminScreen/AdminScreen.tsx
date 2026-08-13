@@ -229,7 +229,7 @@ export default function AdminScreen({ navigation }: Props) {
     for (const row of normalized) {
       const source = row.sourceLabel.trim();
       if (!source) {
-        Alert.alert('Puuttuva tieto', `${DAY_LABELS[row.day]}: lisää lähde (esim. koulu, iltis).`);
+        Alert.alert('Puuttuva tieto', `${DAY_LABELS[row.day]}: lisää lähde (esim. koulu, kerho).`);
         return;
       }
       if (!validateTime(row.arrivalStart) || !validateTime(row.arrivalEnd)) {
@@ -523,7 +523,7 @@ export default function AdminScreen({ navigation }: Props) {
                   style={styles.input}
                   value={row.sourceLabel}
                   onChangeText={text => handleHomeArrivalChange(day, 'sourceLabel', text)}
-                  placeholder="Lahde (koulu, iltis, kerho...)"
+                  placeholder="Lahde (koulu, kerho...)"
                   placeholderTextColor={COLORS.textMuted}
                 />
                 <View style={styles.editRow}>
