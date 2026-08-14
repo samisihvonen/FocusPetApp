@@ -39,5 +39,6 @@ public class User {
     private List<Task> tasks = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ShopItem> ownedItems = new ArrayList<>();
+    // Shop functionality removed for MVP — owned items archived.
+    // private List<ShopItem> ownedItems = new ArrayList<>();
 }

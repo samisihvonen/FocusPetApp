@@ -37,13 +37,8 @@ export interface Task {
   blockUntil?: string;
 }
 
-export interface ShopItem {
-  id: string;
-  name: string;
-  emoji: string;
-  cost: number;
-  owned: boolean;
-}
+// Shop feature archived for MVP; remove ShopItem frontend type to avoid accidental usage.
+// Restore this interface if the Shop feature is re-enabled and backend endpoints return ShopItem data.
 
 export type WeekdayKey = 'ma' | 'ti' | 'ke' | 'to' | 'pe';
 

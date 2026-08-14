@@ -8,5 +8,6 @@ import java.util.List;
 @Repository
 public interface ShopItemRepository extends JpaRepository<ShopItem, Long> {
     List<ShopItem> findByUserId(Long userId);
+
     List<ShopItem> findByGlobalTemplate(boolean globalTemplate);
 }

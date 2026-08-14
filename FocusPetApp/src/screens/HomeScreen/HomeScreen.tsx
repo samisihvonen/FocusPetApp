@@ -20,6 +20,7 @@ import { useVoiceCommands } from '../../hooks/useVoiceCommands';
 import { fetchHobbyEventsForToday, fetchHobbyEventsForDay, HobbyEvent } from '../../services/wilmaSyncParser';
 import { buildGeneratedTask } from '../../services/scheduleParser';
 import { DAILY_ROUTINE_TEMPLATES, WEEKEND_ROUTINE_TEMPLATES } from '../../store/useTaskStore';
+import NowNextCard from '../../components/NowNextCard/NowNextCard';
 
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Home'>;
@@ -76,7 +77,7 @@ const addMinutes = (t: string, min: number) => {
 
 export default function HomeScreen({ navigation }: Props) {
   const { username, xp, streakDays, speechEnabled, toggleSpeech, hobbyUrl } = useUserStore();
-  const { tasks, setActiveTask, ensureDailyRoutines, removeTask, addTask, lastHobbySyncDate, markHobbySynced } = useTaskStore();
+  const { tasks, setActiveTask, ensureDailyRoutines, removeTask, addTask, completeTask, lastHobbySyncDate, markHobbySynced } = useTaskStore();
   const { mood } = usePetStore();
   const { announceDailyPlan, isAvailable, speak } = useSpeechAssistant(speechEnabled);
   const [now, setNow] = useState(new Date());
@@ -188,6 +189,25 @@ export default function HomeScreen({ navigation }: Props) {
     () => routineEntries.filter((e) => e.timeStatus !== 'expired'),
     [routineEntries],
   );
+  const nowTask = useMemo(() => {
+    const firstRoutine = visibleRoutineEntries.find(entry => !entry.isLocked)?.task ?? null;
+    if (firstRoutine) {
+      return firstRoutine;
+    }
+    return regularTasks[0] ?? null;
+  }, [visibleRoutineEntries, regularTasks]);
+  const nextTask = useMemo(() => {
+    if (!nowTask) {
+      return null;
+    }
+
+    const nextFromRoutines = visibleRoutineEntries.find(entry => entry.task.id !== nowTask.id)?.task ?? null;
+    if (nextFromRoutines) {
+      return nextFromRoutines;
+    }
+
+    return regularTasks.find(task => task.id !== nowTask.id) ?? null;
+  }, [visibleRoutineEntries, nowTask, regularTasks]);
   const nowTimeText = now.toLocaleTimeString('fi-FI', {
     hour: '2-digit',
     minute: '2-digit',
@@ -222,6 +242,11 @@ export default function HomeScreen({ navigation }: Props) {
 
   const handleReadPlan = () => {
     announceDailyPlan(sortedPendingTasks.map(t => t.title));
+  };
+
+  const handleCompleteNowTask = (task: Task) => {
+    completeTask(task.id);
+    speak(`Tehtävä ${task.title} tehty!`);
   };
 
   const normalizeCommand = (command: string) =>
@@ -365,6 +390,14 @@ export default function HomeScreen({ navigation }: Props) {
           <StatBox label="Taso" value={`${level}`} />
         </View>
  */}
+        {nowTask && (
+          <NowNextCard
+            now={nowTask}
+            next={nextTask}
+            onDone={handleCompleteNowTask}
+          />
+        )}
+
         {routineTasks.length > 0 && (
           <View style={styles.routineSection}>
             <Text style={styles.sectionTitle}>🕒 Päivän Tehtävät</Text>

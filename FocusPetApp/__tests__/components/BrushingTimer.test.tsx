@@ -49,7 +49,8 @@ describe('BrushingTimer', () => {
       tree = ReactTestRenderer.create(<BrushingTimer onComplete={onComplete} />);
     });
 
-    const button = tree!.root.findByType(TouchableOpacity);
+    const buttons = tree!.root.findAllByType(TouchableOpacity);
+    const button = buttons[0];
 
     await ReactTestRenderer.act(() => {
       button.props.onPress();
@@ -70,12 +71,22 @@ describe('BrushingTimer', () => {
     let tree: ReactTestRenderer.ReactTestRenderer;
 
     await ReactTestRenderer.act(() => {
-      tree = ReactTestRenderer.create(<BrushingTimer autoStartToken={1} />);
+      tree = ReactTestRenderer.create(<BrushingTimer />);
     });
 
-    const allText = tree!.root.findAllByType('Text').map(node => node.props.children).flat();
+    await ReactTestRenderer.act(() => {
+      tree.update(<BrushingTimer autoStartToken={1} />);
+    });
 
-    expect(allText).toContain('⏸️ Tauko');
+    // Ensure effects and state updates have flushed
+    await ReactTestRenderer.act(() => {
+      jest.advanceTimersByTime(0);
+    });
+
+    const buttons = tree!.root.findAllByType(TouchableOpacity);
+    const primaryButtonText = buttons[0].findByType('Text').props.children;
+
+    expect(primaryButtonText).toBe('⏸️ Tauko');
 
     await ReactTestRenderer.act(() => {
       tree!.unmount();

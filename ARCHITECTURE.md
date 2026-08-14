@@ -1,42 +1,44 @@
-# FocusPet — Yksinkertaistettu arkkitehtuuri
+# FocusPet — Simplified Architecture
 
-Tämä tiedosto kuvaa yksinkertaisemman, kevyemmän version sovelluksesta — tavoitteena vähentää ylläpidon ja kehityksen vaatimusta sekä nopeuttaa julkaisuvalmiutta.
+This file describes a simpler, lighter version of the application — aiming to reduce maintenance and development overhead and speed up release readiness.
 
-Ydintavoite
-- Tehdä tehtävien pilkkomisesta hauskaa ja palkitsevaa lapsille.
-- Säilyttää mahdollisimman pieni tekninen pinta-ala (paikallinen tila, minimimäärä riippuvuuksia).
+Core Goal
+- Make breaking down tasks fun and rewarding for children.
+- Maintain the smallest possible technical footprint (local state, minimum number of dependencies).
 
-Keskeiset komponentit (vain mitä tarvitaan MVP:hen)
-- UI (React Native + TypeScript): kotinäkymä, tehtävänäkymä, askelkortit, pet-display (3 tilaa).
-- Task Breaker: AI-kutsut tai paikallinen heuristiikka pilkkomiseen.
-- Paikallinen tallennus: `AsyncStorage` (Tasks, User, Pet, Coins/Xp).
-- Minimal state management: paikallinen Zustand/Context tai pelkkä komponenttitila.
+Key Components (only what is needed for MVP)
+- UI (React Native + TypeScript): home view, task view, step cards, pet display (3 states).
+- Task Breaker: AI calls or local heuristics for task decomposition.
+- Local Storage: `AsyncStorage` (Tasks, User, Pet, Coins/Xp).
+- Minimal State Management: local Zustand/Context or plain component state.
 
-Minimitoiminnot (MVP)
-- Tehtävän lisääminen ja pilkkominen (AI tai yksinkertainen sääntöjärjestelmä).
-- Askeleiden suoritus ja yksinkertainen palkitseminen: animaatio + ääniefekti + kolikot + XP.
-- Pet-display: kolme tilaa (ilo, neutraali, suru) — ei persistenssiä tai monimutkaista logiikkaa.
-- Paikalliset asetukset: käyttäjätili vain laitteella.
+Minimum Functionality (MVP)
+- Adding and breaking down a task (AI or a simple rule system).
+- Step completion and simple rewarding: animation + sound effect + coins + XP.
+- Pet Display: three states (happy, neutral, sad) — no persistence or complex logic.
+- Local Settings: user profile exists only on the device.
 
-Miksi yksinkertaistaa
-- Nopeampi kehityssykli ja pienempi ylläpitokustannus.
-- Vähentää backend-työn tarvetta — julkaise ensin paikallisena kokemuksena.
-- Helpottaa testausta ja käyttäjäpalautteen keräämistä.
+Accessibility / Simple Mode
+- Provide the option for the user to enable `Simple Mode` in settings.
+- Features: larger fonts, high-contrast color scheme, simplified text, action confirmations (confirm before delete), reduced options.
 
-Kasvupolku (yksinkertaisesti)
-1. Julkaise paikallinen MVP: kaikki data `AsyncStorage`-ssä.
-2. Jos käyttäjäarvio ja tarve kasvaa, lisää opt-in synkronointi (esim. Supabase tai kevyt REST-API).
-3. Lisää vanhempien hyväksyntä ja push-notifikaatiot vasta kun backend on perustettu.
+Why Simplify
+- Faster development cycle and lower maintenance cost.
+- Reduces the need for backend work — release as a local experience first.
+- Facilitates testing and gathering user feedback.
 
-Tekninen pinnoitus
+Growth Path (simplified)
+1. Release local MVP: all data stored in `AsyncStorage`.
+2. If user traction and demand grow, add opt-in sync (e.g., Supabase or a lightweight REST API).
+3. Add parent approval and push notifications only after a backend is established.
+
+Technical Stack
 - React Native + TypeScript
-- Paikallinen storage: `@react-native-async-storage/async-storage`
-- Optional: Zustand (kevyempi state management)
+- Local Storage: `@react-native-async-storage/async-storage`
+- Optional: Zustand (lightweight state management)
 
-Pidetään lista ominaisuuksista minimissä: vältä monimutkaisia toimenpiteitä kuten monen laitteen synkronointia, monimutkaista analytiikkaa tai laajaa backend-arkkitehtuuria V1:ssä.
+Keep the feature list to a minimum: avoid complex mechanics such as multi-device sync, complex analytics, or an extensive backend architecture in V1.
 
-Seuraavat toimet
-- Pienennetään README:tä vastaamaan tätä yksinkertaisempaa lähestymistapaa.
-- Listataan koodissa poistettavat/arkistoitavat moduulit (pyydä halutessasi automaattista etsintää).
-
-
+Next Steps
+- Trim down the README to reflect this simpler approach.
+- List modules to be removed/archived in the code (request an automatic search if desired).

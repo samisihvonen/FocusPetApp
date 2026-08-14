@@ -36,11 +36,6 @@ export default function WeekCalendarScreen({ navigation }: Props) {
   }, []);
 
   const load = useCallback(async () => {
-    if (!wilmaUrl && !hobbyUrl) {
-      setError('Aseta Wilma- tai MyClub-kalenteri-URL ensin adminpaneelissa (⚙️).');
-      setLoading(false);
-      return;
-    }
     setLoading(true);
     setError('');
     try {
@@ -221,16 +216,16 @@ function DayView({
   const hasHobbies = day.hobbies.length > 0;
 
   const dateLabel = day.date.toLocaleDateString('fi-FI', {
-    weekday: 'long',
+    weekday: 'short',
     day: 'numeric',
-    month: 'long',
+    month: 'numeric',
   });
 
   return (
     <View>
       <View style={styles.dayHeaderRow}>
         <Text style={styles.dayHeaderText}>
-          {dateLabel}{isToday ? '  📍 Tänään' : ''}
+          {isToday ? '📍 Tänään — ' : ''}{dateLabel}
         </Text>
       </View>
 
@@ -256,7 +251,7 @@ function DayView({
                   <Text style={styles.eventCardTime}>
                     {day.school!.schoolStart} – {day.school!.schoolEnd}
                   </Text>
-                  <Text style={styles.tapHint}>Katso tunnit →</Text>
+                  <Text style={styles.tapHint}>👀 Näytä tunnit</Text>
                 </View>
               </View>
               <View style={[styles.pill, styles.pillSchool]}>
@@ -329,14 +324,14 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
   },
   chip: {
-    width: 48,
-    paddingVertical: 8,
+    width: 72,
+    paddingVertical: 10,
     borderRadius: RADIUS.md,
     backgroundColor: COLORS.card,
     borderWidth: 1,
     borderColor: COLORS.cardBorder,
     alignItems: 'center',
-    gap: 2,
+    gap: 4,
   },
   chipSelected: {
     backgroundColor: COLORS.primary,
@@ -346,10 +341,10 @@ const styles = StyleSheet.create({
     borderColor: COLORS.xp,
     borderWidth: 2,
   },
-  chipDayName: { color: COLORS.textMuted, fontSize: FONT.sm, fontWeight: '600' },
-  chipDate: { color: COLORS.text, fontSize: FONT.md, fontWeight: '700' },
+  chipDayName: { color: COLORS.textMuted, fontSize: FONT.md, fontWeight: '700' },
+  chipDate: { color: COLORS.text, fontSize: FONT.lg, fontWeight: '900' },
   chipTextSelected: { color: '#fff' },
-  dot: { width: 5, height: 5, borderRadius: 3, backgroundColor: COLORS.warning },
+  dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: COLORS.warning },
   dotSelected: { backgroundColor: '#fff' },
 
   // ── Scroll area ───────────────────────────────────────────
@@ -360,15 +355,15 @@ const styles = StyleSheet.create({
   dayHeaderRow: { marginBottom: 12 },
   dayHeaderText: {
     color: COLORS.text,
-    fontSize: FONT.md,
-    fontWeight: '700',
+    fontSize: FONT.lg,
+    fontWeight: '800',
     textTransform: 'capitalize',
   },
 
   // ── Empty state ───────────────────────────────────────────
   emptyDay: { alignItems: 'center', paddingVertical: 48, gap: 8 },
-  emptyEmoji: { fontSize: 48 },
-  emptyLabel: { color: COLORS.textMuted, fontSize: FONT.lg, fontWeight: '600' },
+  emptyEmoji: { fontSize: 64 },
+  emptyLabel: { color: COLORS.textMuted, fontSize: FONT.xl, fontWeight: '800' },
 
   // ── Event cards ───────────────────────────────────────────
   eventList: { gap: 12 },
@@ -389,13 +384,13 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(251,146,60,0.4)',
   },
   eventCardLeft: { flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1 },
-  eventCardEmoji: { fontSize: 28 },
+  eventCardEmoji: { fontSize: 32 },
   eventCardInfo: { flex: 1 },
   eventCardTitle: {
     color: COLORS.text,
-    fontSize: FONT.md,
-    fontWeight: '700',
-    marginBottom: 2,
+    fontSize: FONT.lg,
+    fontWeight: '800',
+    marginBottom: 4,
   },
   eventCardTime: { color: COLORS.textMuted, fontSize: FONT.sm },
   pill: {
@@ -406,7 +401,7 @@ const styles = StyleSheet.create({
   pillSchool: { backgroundColor: 'rgba(56,189,248,0.25)' },
   pillHobby: { backgroundColor: 'rgba(251,146,60,0.25)' },
   pillText: { color: COLORS.text, fontSize: 10, fontWeight: '600' },
-  tapHint: { color: 'rgba(56,189,248,0.9)', fontSize: FONT.sm, marginTop: 3 },
+  tapHint: { color: 'rgba(56,189,248,0.95)', fontSize: FONT.md, marginTop: 6, fontWeight: '700' },
 
   // ── School schedule modal ─────────────────────────────────
   modalBackdrop: {

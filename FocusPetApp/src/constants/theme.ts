@@ -43,3 +43,13 @@ export const FONT = {
   xxl: 28,
   hero: 36,
 };
+
+// Larger font sizes for accessibility / simplified mode
+export const ACCESSIBLE_FONT = {
+  sm: 14,
+  md: 18,
+  lg: 22,
+  xl: 26,
+  xxl: 34,
+  hero: 44,
+};

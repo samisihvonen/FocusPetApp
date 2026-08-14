@@ -10,12 +10,14 @@ import {
   Vibration,
   KeyboardAvoidingView,
   Platform,
+  Switch,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigation/types';
 import { useUserStore } from '../../store/useUserStore';
 import { useTaskStore } from '../../store/useTaskStore';
+import useSimpleMode from '../../hooks/useSimpleMode';
 import { COLORS, RADIUS, FONT } from '../../constants/theme';
 import { HomeArrivalRule, WeekdayKey } from '../../types';
 import {
@@ -82,6 +84,8 @@ export default function AdminScreen({ navigation }: Props) {
 
   // ── Home arrival schedule state ─────────────────────────
   const [homeArrivalInputs, setHomeArrivalInputs] = useState<HomeArrivalRule[]>(homeArrivalRules);
+
+  const { simpleMode, toggle } = useSimpleMode();
 
   // ── Wilma sync state ──────────────────────────────────────
   const [wilmaUrlInput, setWilmaUrlInput] = useState(wilmaUrl);
@@ -474,6 +478,16 @@ export default function AdminScreen({ navigation }: Props) {
               <Text style={styles.rowBtnAction}>Muuta ✏️</Text>
             </TouchableOpacity>
           )}
+        </View>
+
+        {/* ── Yksinkertainen tila ──── */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>🧩 Yksinkertainen tila</Text>
+          <Text style={styles.hintText}>Ota käyttöön, jos lapsella on vaikeuksia toiminnanohjauksessa. Suurentaa tekstejä ja yksinkertaistaa käyttöliittymää.</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 8 }}>
+            <Text style={{ color: COLORS.text, fontSize: 15 }}>{simpleMode ? 'Päällä' : 'Pois'}</Text>
+            <Switch value={simpleMode} onValueChange={toggle} />
+          </View>
         </View>
 
         {/* ── Tehtävät ──── */}
