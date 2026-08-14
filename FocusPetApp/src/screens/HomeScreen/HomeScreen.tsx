@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Animated,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -311,7 +312,26 @@ export default function HomeScreen({ navigation }: Props) {
     startListening,
     stopListening,
   } = useVoiceCommands({ onCommand: handleVoiceCommand });
+  // Entrance animation for Now/Next card
+  const entrance = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    if (!nowTask) return;
+    Animated.spring(entrance, {
+      toValue: 1,
+      useNativeDriver: true,
+      speed: 12,
+      bounciness: 8,
+    }).start();
+  }, [nowTask, entrance]);
 
+  const nowNextAnimatedStyle = {
+    opacity: entrance,
+    transform: [
+      {
+        translateY: entrance.interpolate({ inputRange: [0, 1], outputRange: [18, 0] }),
+      },
+    ],
+  };
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView
@@ -391,11 +411,13 @@ export default function HomeScreen({ navigation }: Props) {
         </View>
  */}
         {nowTask && (
-          <NowNextCard
-            now={nowTask}
-            next={nextTask}
-            onDone={handleCompleteNowTask}
-          />
+          <Animated.View style={nowNextAnimatedStyle}>
+            <NowNextCard
+              now={nowTask}
+              next={nextTask}
+              onDone={handleCompleteNowTask}
+            />
+          </Animated.View>
         )}
 
         {routineTasks.length > 0 && (
